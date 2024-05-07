@@ -26,5 +26,8 @@ jobs:
           echo ${{ secrets.GITHUB_TOKEN }} | gh auth login --with-token
           gh auth status
 
-      - name: List Gist
-        run: gh api gists
+      - name: Create Gist
+        run: |
+          echo "Hello, World!" > hello.txt
+          echo ${{ secrets.GITHUB_TOKEN }} | gh auth login --with-token
+          gh gist create hello.txt --public
