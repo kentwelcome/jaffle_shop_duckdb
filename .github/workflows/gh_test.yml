@@ -1,0 +1,28 @@
+name: GH Gist test
+
+on:
+  workflow_dispatch:
+    inputs:
+      gist_file_name:
+        description: "Gist File Name"
+        required: true
+        type: string
+        default: ""
+
+jobs:
+  run-gh-cli:
+    name: Run GH CLI
+    runs-on: ubuntu-latest
+    permissions:
+      gists: write
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v3
+        with:
+          fetch-depth: 0
+      - name: Check GH CLI
+        run: gh --version
+      - name: Check GH auth
+        run: |
+          gh auth status
