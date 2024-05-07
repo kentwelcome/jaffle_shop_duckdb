@@ -23,4 +23,5 @@ jobs:
         run: gh --version
       - name: Check GH auth
         run: |
+          echo ${{ secrets.GITHUB_TOKEN }} | gh auth login --with-token
           gh auth status
