@@ -22,7 +22,7 @@ jobs:
           pip install -r requirements.txt
       - name: Install Recce
         run: |
-          pip install recce-nightly
+          pip install recce-nightly==0.18.0.20240514a417
       - name: Add packages.yml file
         run: |
           echo '${{ vars.PACKAGES_YAML }}' > packages.yml
@@ -60,7 +60,16 @@ jobs:
         run: |
           recce run --github-pull-request-url ${{ github.event.pull_request.html_url }}
 
+      - name: Procress Recce Run Error
+        if: failure()
+        run: |
+          if [ -f recce_error.log ]; then
+            echo "Recce CI failed. Please check the following error message:"
+            echo "::error::$(cat recce_error.log)"
+          fi
+
       - name: Archive Recce State File
+        continue-on-error: true
         uses: actions/upload-artifact@v4
         id: recce-artifact-uploader
         with:
@@ -68,6 +77,7 @@ jobs:
           path: recce_state.json
 
       - name: Prepare Recce Summary
+        continue-on-error: true
         id: recce-summary
         run: |
           recce summary recce_state.json > recce_summary.md
@@ -100,6 +110,7 @@ jobs:
             ```
 
       - name: Comment on pull request
+        continue-on-error: true
         uses: thollander/actions-comment-pull-request@v2
         with:
           filePath: recce_summary.md
