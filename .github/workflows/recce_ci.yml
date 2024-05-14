@@ -57,6 +57,7 @@ jobs:
           DBT_CURRENT_TARGET: "dev"
 
       - name: Run Recce CI
+        continue-on-error: true
         run: |
           recce run --github-pull-request-url ${{ github.event.pull_request.html_url }}
 
@@ -69,7 +70,6 @@ jobs:
           fi
 
       - name: Archive Recce State File
-        continue-on-error: true
         uses: actions/upload-artifact@v4
         id: recce-artifact-uploader
         with:
@@ -77,7 +77,6 @@ jobs:
           path: recce_state.json
 
       - name: Prepare Recce Summary
-        continue-on-error: true
         id: recce-summary
         run: |
           recce summary recce_state.json > recce_summary.md
@@ -110,7 +109,6 @@ jobs:
             ```
 
       - name: Comment on pull request
-        continue-on-error: true
         uses: thollander/actions-comment-pull-request@v2
         with:
           filePath: recce_summary.md
