@@ -45,3 +45,12 @@ checks:
             first_order_week
         ORDER BY
             first_order_week;
+  - name: Query non-exist table
+    description: Should be failed because the table does not exist
+    type: query_diff
+    params:
+      sql_template: |-
+        SELECT
+            *
+        FROM
+            {{ ref("no_such_table") }}
