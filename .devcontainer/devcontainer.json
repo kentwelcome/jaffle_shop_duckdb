@@ -1,6 +1,19 @@
 {
     "name": "Recce Cloud",
     "image": "infuseai/dev-container-base-image:latest",
+    "customizations": {
+        "vscode": {
+            "settings": {
+                "terminal.integrated.shell.linux": "/bin/bash"
+            }
+        }
+    },
     "forwardPorts": [ 8000 ],
-    "postStartCommand": "echo 'Starting Recce Codespaces Container...'; pip install -r requirement.txt; post_start_commands"
+    "portsAttributes": {
+        "8000": {
+            "label": "Recce Server",
+            "onAutoForward": "openBrowser"
+        }
+    },
+    "postStartCommand": "echo 'Starting Recce Codespaces Container...'; pip install -r requirements.txt; post_start_commands"
   }
