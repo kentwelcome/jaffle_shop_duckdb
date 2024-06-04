@@ -1,8 +1,6 @@
 {
     "name": "Recce Cloud",
-    "build":{
-      "dockerfile": "Dockerfile"
-    },
-    "forwardPorts": [ 8000],
-    "postStartCommand": "echo 'Starting Recce Codespaces Container...'; post_start_commands",
+    "image": "infuseai/dev-container-base-image:latest",
+    "forwardPorts": [ 8000 ],
+    "postStartCommand": "echo 'Starting Recce Codespaces Container...'; pip install -r requirement.txt; post_start_commands"
   }
