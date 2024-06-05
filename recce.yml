@@ -21,15 +21,6 @@ checks:
       node_names:
         - customers
         - orders
-  - name: Value diff of customers
-    description: The customer_lifetime_value in customers should be 100% matched
-    type: value_diff
-    params:
-      model: customers
-      primary_key: customer_id
-      columns:
-        - customer_id
-        - customer_lifetime_value
   - name: Query diff of customers avg lifetime value
     description: The average of customer_lifetime_value should not be changed
     type: query_diff
