@@ -1,6 +1,9 @@
 {
     "name": "Recce Cloud",
     "image": "infuseai/dev-container-base-image:latest",
+    "containerEnv": {
+        "RECCE_CI_WORKFLOW_NAME": ".github/workflows/recce_ci.yml"
+    },
     "customizations": {
         "vscode": {
             "settings": {
