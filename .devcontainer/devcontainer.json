@@ -4,7 +4,7 @@
     "containerEnv": {
         "RECCE_CI_WORKFLOW_NAME": ".github/workflows/recce_ci.yml",
         "DEPENDENCIES_FILE": "requirements.txt",
-        "DEPENDENCIES_SHELL_SCRIPT_PATH": ""
+        "DEPENDENCIES_SHELL_SCRIPT_PATH": "pip install gradio"
     },
     "customizations": {
         "vscode": {
