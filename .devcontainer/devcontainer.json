@@ -15,7 +15,7 @@
     "portsAttributes": {
         "8000": {
             "label": "Recce Server",
-            "onAutoForward": "openBrowser"
+            // "onAutoForward": "openBrowser"
         }
     },
     "postStartCommand": "pip install -r requirements.txt && post_start_commands"
