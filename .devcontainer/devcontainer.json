@@ -4,7 +4,7 @@
     "containerEnv": {
         "RECCE_CI_WORKFLOW_NAME": ".github/workflows/recce_ci.yml",
         "DEPENDENCIES_FILE": "requirements.txt",
-        "DEPENDENCIES_SHELL_SCRIPT_PATH": "init.sh"
+        "POST_INSTALL_DEPENDENCIES_COMMAND": "pip install gradio"
     },
     "customizations": {
         "vscode": {
@@ -20,5 +20,5 @@
             // "onAutoForward": "openBrowser"
         }
     },
-    "postStartCommand": "post_start_commands"
+    "postStartCommand": "post_start_command"
   }
