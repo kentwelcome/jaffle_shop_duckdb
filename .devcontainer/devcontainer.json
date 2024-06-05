@@ -2,7 +2,9 @@
     "name": "Recce Cloud",
     "image": "infuseai/dev-container-base-image:latest",
     "containerEnv": {
-        "RECCE_CI_WORKFLOW_NAME": ".github/workflows/recce_ci.yml"
+        "RECCE_CI_WORKFLOW_NAME": ".github/workflows/recce_ci.yml",
+        "DEPENDENCIES_FILE": "requirements.txt",
+        "DEPENDENCIES_SHELL_SCRIPT_PATH": ""
     },
     "customizations": {
         "vscode": {
@@ -14,9 +16,9 @@
     "forwardPorts": [ 8000 ],
     "portsAttributes": {
         "8000": {
-            "label": "Recce Server",
+            "label": "Recce Server"
             // "onAutoForward": "openBrowser"
         }
     },
-    "postStartCommand": "pip install -r requirements.txt && post_start_commands"
+    "postStartCommand": "post_start_commands"
   }
