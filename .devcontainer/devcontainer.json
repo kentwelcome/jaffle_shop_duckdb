@@ -18,8 +18,9 @@
             "onAutoForward": "openBrowser"
         }
     },
-    "postStartCommand": [
-        "echo 'Starting Recce Codespaces Container...';",
-        "pip install -r requirements.txt;", 
-        "post_start_commands;"]
+    "postStartCommand": {
+        "message": "echo 'Starting Recce Codespaces Container...';",
+        "dependency": "pip install -r requirements.txt;", 
+        "launch": "post_start_commands;"
+    }
   }
