@@ -6,5 +6,6 @@
     "features": {
         "ghcr.io/devcontainers/features/github-cli:1": {}
     },
+    "forwardPorts": [8000],
     "postStartCommand": "./.devcontainer/script/post_start.sh"
 }
