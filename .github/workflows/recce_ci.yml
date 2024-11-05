@@ -17,7 +17,7 @@ jobs:
         uses: kentwelcome/PR-Update@feature/add-flag-to-disable-auto-merge
         with:
           baseBranch: ${{ github.event.pull_request.base.ref }}
-          autoMerge: false
+          # autoMerge: false
       - name: Set up Python
         uses: actions/setup-python@v4
         with:
