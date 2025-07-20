@@ -25,3 +25,4 @@ jobs:
           recce cloud download-base-artifacts --force --debug
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          RECCE_STATE_PASSWORD: ${{ vars.RECCE_STATE_PASSWORD }}
