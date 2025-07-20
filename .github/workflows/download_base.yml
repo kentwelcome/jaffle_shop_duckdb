@@ -16,6 +16,8 @@ jobs:
 
       - name: Install dependencies
         run: |
+          pip install -r requirements.txt
+          # Ensure recce and packaging are installed
           pip install recce packaging
 
       - name: Download DBT Base
