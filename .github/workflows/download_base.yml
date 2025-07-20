@@ -23,3 +23,5 @@ jobs:
       - name: Download DBT Base
         run: |
           recce cloud download-base-artifacts --force --debug
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
