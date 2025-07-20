@@ -1,0 +1,22 @@
+name: DBT Download Base
+on:
+  workflow_dispatch:
+  
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v3
+
+      - name: Set up Python
+        uses: actions/setup-python@v2
+        with:
+          python-version: "3.10.x"
+
+      - name: Install dependencies
+        run: |
+          pip install -r recce
+      - name: Download DBT Base
+        run: |
+          recce cloud download-base-artifacts --force --debug
