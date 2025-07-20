@@ -23,6 +23,7 @@ jobs:
       - name: Download DBT Base
         run: |
           echo "Downloading DBT Base artifacts..."
+          git status
           echo "GITHUB_BASE_REF: ${GITHUB_BASE_REF}"
           python current_default_branch.py
           recce cloud download-base-artifacts --force --debug
