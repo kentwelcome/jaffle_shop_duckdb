@@ -16,7 +16,7 @@ jobs:
 
       - name: Install dependencies
         run: |
-          pip install -r recce
+          pip install recce
       - name: Download DBT Base
         run: |
           recce cloud download-base-artifacts --force --debug
