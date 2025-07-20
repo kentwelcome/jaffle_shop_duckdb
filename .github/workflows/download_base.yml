@@ -22,6 +22,8 @@ jobs:
 
       - name: Download DBT Base
         run: |
+          echo "Downloading DBT Base artifacts..."
+          echo "GITHUB_BASE_REF: ${GITHUB_BASE_REF}"
           recce cloud download-base-artifacts --force --debug
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
