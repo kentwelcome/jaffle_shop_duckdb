@@ -108,7 +108,7 @@ main() {
         # Placeholder for actual upload logic to project base
         snapshot_id=$(fetch_base_snapshot)
         log_info "Uploading artifacts to snapshot ID: $snapshot_id"
-        recce snapshot --snapshot-id "$snapshot_id"
+        recce snapshot --snapshot-id "$snapshot_id" --api-token "${RECCE_CLOUD_TOKEN}"
         log_success "Snapshot uploaded to project base successfully."
     elif [[ "$ACTION" == "target" ]]; then
         log_info "Uploading snapshot to project target..."
@@ -130,7 +130,7 @@ main() {
             snapshot_id=$(create_snapshot_with_pr_link $pr_link)
         fi
         log_info "Uploading artifacts to snapshot ID: $snapshot_id"
-        recce snapshot --snapshot-id "$snapshot_id"
+        recce snapshot --snapshot-id "$snapshot_id" --api-token "${RECCE_CLOUD_TOKEN}"
         log_success "Snapshot uploaded to project target successfully."
         echo "snapshot_id=${snapshot_id}" >> $GITHUB_OUTPUT
     else
