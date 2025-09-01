@@ -68,6 +68,7 @@ jobs:
           RECCE_CLOUD_API_HOST: https://554b955bf3fb.ngrok-free.app
           RECCE_CLOUD_ORGANIZATION: kentwelcome
           RECCE_CLOUD_PROJECT: jaffle_shop_duckdb
+          GITHUB_PR_NUMBER: ${{ github.event.pull_request.number }}
 
       - name: Comment on pull request
         uses: thollander/actions-comment-pull-request@v3
