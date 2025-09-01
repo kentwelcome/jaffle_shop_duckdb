@@ -6,6 +6,7 @@
 set -euo pipefail  # Exit on error, undefined variables, and pipe failures
 
 # Configuration
+RECCE_CLOUD_TOKEN=${RECCE_CLOUD_TOKEN:-}
 RECCE_CLOUD_API_HOST=${RECCE_CLOUD_API_HOST:-"http://127.0.0.1:9527"}
 RECCE_CLOUD_ORGANIZATION=${RECCE_CLOUD_ORGANIZATION:-"kentwelcome"}
 RECCE_CLOUD_PROJECT=${RECCE_CLOUD_PROJECT:-"jaffle_shop_duckdb"}
@@ -77,7 +78,7 @@ done
 function invoke_query_snapshot_api() {
     local query_params="$1"
     api_url="${RECCE_CLOUD_API_HOST}/api/v2/organizations/${RECCE_CLOUD_ORGANIZATION}/projects/${RECCE_CLOUD_PROJECT}/snapshots/query?${query_params}"
-    curl -s -X 'GET' $api_url -H 'accept: application/json' -H "Authorization: Bearer ${GITHUB_TOKEN}" | jq .snapshots[0]
+    curl -s -X 'GET' $api_url -H 'accept: application/json' -H "Authorization: Bearer ${RECCE_CLOUD_TOKEN}" | jq .snapshots[0]
 }
 
 function fetch_snapshot_by_pr_link() {
@@ -95,7 +96,7 @@ function create_snapshot_with_pr_link() {
     local pr_link="$1"
     api_url="${RECCE_CLOUD_API_HOST}/api/v2/organizations/${RECCE_CLOUD_ORGANIZATION}/projects/${RECCE_CLOUD_PROJECT}/snapshots"
     payload="{\"name\": \"Pull Request #${GITHUB_PR_NUMBER:-}\",\"pr_link\": \"${pr_link}\",\"branch\": \"${GITHUB_REF:-pr-branch}\"}"
-    response=$(curl -s -X 'POST' $api_url -H 'accept: application/json' -H "Authorization: Bearer ${GITHUB_TOKEN}" -H 'Content-Type: application/json' -d "$payload")
+    response=$(curl -s -X 'POST' $api_url -H 'accept: application/json' -H "Authorization: Bearer ${RECCE_CLOUD_TOKEN}" -H 'Content-Type: application/json' -d "$payload")
     echo $response | jq -r .snapshot.id
 }
 
