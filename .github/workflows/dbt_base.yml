@@ -40,3 +40,12 @@ jobs:
         with:
           name: target
           path: target/
+
+      - name: RECCE Cloud Snapshot Upload
+        run: |
+          .github/scripts/upload-snapshot base
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          RECCE_CLOUD_API_HOST: https://554b955bf3fb.ngrok-free.app
+          RECCE_CLOUD_ORGANIZATION: kentwelcome
+          RECCE_CLOUD_PROJECT: jaffle_shop_duckdb

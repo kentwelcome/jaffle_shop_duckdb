@@ -1,0 +1,143 @@
+#!/bin/bash
+
+# Upload Snapshot Script for jaffle_shop_duckdb
+# This script creates and uploads database snapshots for comparison and backup
+
+set -euo pipefail  # Exit on error, undefined variables, and pipe failures
+
+# Configuration
+RECCE_CLOUD_API_HOST=${RECCE_CLOUD_API_HOST:-"http://127.0.0.1:9527"}
+RECCE_CLOUD_ORGANIZATION=${RECCE_CLOUD_ORGANIZATION:-"kentwelcome"}
+RECCE_CLOUD_PROJECT=${RECCE_CLOUD_PROJECT:-"jaffle_shop_duckdb"}
+
+# Colors for output
+RED='\033[0;31m'
+GREEN='\033[0;32m'
+YELLOW='\033[1;33m'
+BLUE='\033[0;34m'
+NC='\033[0m' # No Color
+
+# Logging functions
+log_info() {
+    echo -e "${BLUE}[INFO]${NC} $1"
+}
+
+log_success() {
+    echo -e "${GREEN}[SUCCESS]${NC} $1"
+}
+
+log_warning() {
+    echo -e "${YELLOW}[WARNING]${NC} $1"
+}
+
+log_error() {
+    echo -e "${RED}[ERROR]${NC} $1"
+}
+
+# Help function
+show_help() {
+    cat << EOF
+Usage: $0 base | target [OPTIONS]
+
+
+
+OPTIONS:
+    -h, --help                 Show this help message
+
+EXAMPLES:
+    $0 base                    # Upload snapshot to project base
+    $0 target                  # Upload snapshot to project target
+EOF
+}
+
+# Parse command line arguments
+
+while [[ $# -gt 0 ]]; do
+    case $1 in
+        base)
+            ACTION="base"
+            shift 1
+            ;;
+        target)
+            ACTION="target"
+            shift 1
+            ;;
+        -h|--help)
+            show_help
+            exit 0
+            ;;
+        *)
+            log_error "Unknown option: $1"
+            show_help
+            exit 1
+            ;;
+    esac
+done
+
+function invoke_query_snapshot_api() {
+    local query_params="$1"
+    api_url="${RECCE_CLOUD_API_HOST}/api/v2/organizations/${RECCE_CLOUD_ORGANIZATION}/projects/${RECCE_CLOUD_PROJECT}/snapshots/query?${query_params}"
+    curl -s -X 'GET' $api_url -H 'accept: application/json' -H "Authorization: Bearer ${GITHUB_TOKEN}" | jq .snapshots[0]
+}
+
+function fetch_snapshot_by_pr_link() {
+    local pr_link="$1"
+    # Placeholder for actual fetch logic
+    invoke_query_snapshot_api "pr_link=${pr_link}" | jq -r .id
+}
+
+function fetch_base_snapshot() {
+    # Placeholder for actual fetch logic
+    invoke_query_snapshot_api "is_base=true" | jq -r .id
+}
+
+function create_snapshot_with_pr_link() {
+    local pr_link="$1"
+    api_url="${RECCE_CLOUD_API_HOST}/api/v2/organizations/${RECCE_CLOUD_ORGANIZATION}/projects/${RECCE_CLOUD_PROJECT}/snapshots"
+    payload="{\"name\": \"Pull Request #${GITHUB_PR_NUMBER:-}\",\"pr_link\": \"${pr_link}\",\"branch\": \"${GITHUB_REF:-pr-branch}\"}"
+    response=$(curl -s -X 'POST' $api_url -H 'accept: application/json' -H "Authorization: Bearer ${GITHUB_TOKEN}" -H 'Content-Type: application/json' -d "$payload")
+    echo $response | jq -r .snapshot.id
+}
+
+# Main execution
+main() {
+    log_info "Starting snapshot upload process..."
+    if [[ "$ACTION" == "base" ]]; then
+        log_info "Uploading snapshot to project base..."
+        # Placeholder for actual upload logic to project base
+        snapshot_id=$(fetch_base_snapshot)
+        log_info "Uploading artifacts to snapshot ID: $snapshot_id"
+        recce snapshot --snapshot-id "$snapshot_id"
+        log_success "Snapshot uploaded to project base successfully."
+    elif [[ "$ACTION" == "target" ]]; then
+        log_info "Uploading snapshot to project target..."
+        # Placeholder for actual upload logic to project target
+        if [[ -z "${GITHUB_PR_NUMBER:-}" ]]; then
+            log_error "GITHUB_PR_NUMBER is not set. Cannot proceed with target snapshot upload."
+            exit 1
+        fi
+        if [[ -z "${GITHUB_REPOSITORY:-}" ]]; then
+            log_error "GITHUB_REPOSITORY is not set. Cannot proceed with target snapshot upload."
+            exit 1
+        fi
+
+        pr_link="https://github.com/${GITHUB_REPOSITORY:-}/pull/${GITHUB_PR_NUMBER:-}"
+        snapshot_id=$(fetch_snapshot_by_pr_link $pr_link)
+        if [[ -z "$snapshot_id" || "$snapshot_id" == "null" ]]; then
+            log_warning "No snapshot found for PR link: $pr_link"
+            log_info "Creating new snapshot for PR link: $pr_link"
+            snapshot_id=$(create_snapshot_with_pr_link $pr_link)
+        fi
+        log_info "Uploading artifacts to snapshot ID: $snapshot_id"
+        recce snapshot --snapshot-id "$snapshot_id"
+        log_success "Snapshot uploaded to project target successfully."
+        echo "snapshot_id=${snapshot_id}" >> $GITHUB_OUTPUT
+    else
+        log_error "No valid action specified. Use 'base' or 'target'."
+        exit 1
+    fi
+    
+}
+
+# Run main function
+main "$@"

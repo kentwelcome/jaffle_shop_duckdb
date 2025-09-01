@@ -59,43 +59,61 @@ jobs:
           name: target
           path: target/
 
-      - name: Upload Recce State File
-        uses: actions/upload-artifact@v4
-        id: recce-artifact-uploader
-        with:
-          name: duckdb
-          path: |
-            jaffle_shop.duckdb
-
-      - name: Prepare Recce Summary
-        id: recce-summary
+      - name: Recce Cloud snapshot upload
+        id: recce-snapshot-upload
         run: |
-          recce summary --cloud --cloud-token ${{ secrets.RECCE_CLOUD_TOKEN }} > recce_summary.md
-          cat recce_summary.md >> $GITHUB_STEP_SUMMARY
-          echo '${{ env.NEXT_STEP_MESSAGE }}' >> recce_summary.md
-
-          # Handle the case when the recce summary is too long to be displayed in the GitHub PR comment
-          if [[ `wc -c recce_summary.md | awk '{print $1}'` -ge '65535' ]]; then
-            echo '# Recce Summary
-          The recce summary is too long to be displayed in the GitHub PR comment.
-          Please check the summary detail in the [Job Summary](${{github.server_url}}/${{github.repository}}/actions/runs/${{github.run_id}}) page.
-          ${{ env.NEXT_STEP_MESSAGE }}' > recce_summary.md
-          fi
-
+          .github/scripts/upload-snapshot target
         env:
-          ARTIFACT_URL: ${{ steps.recce-artifact-uploader.outputs.artifact-url }}
-          RECCE_STATE_PASSWORD: ${{ vars.RECCE_STATE_PASSWORD}}
-          NEXT_STEP_MESSAGE: |
-            ### How to check the recce result
-            ```bash
-            # Launch the recce server based on the state file
-            recce server --review --cloud --password ${{ vars.RECCE_STATE_PASSWORD}}
-
-            # Open the recce server http://localhost:8000 by your browser
-            ```
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          RECCE_CLOUD_API_HOST: https://554b955bf3fb.ngrok-free.app
+          RECCE_CLOUD_ORGANIZATION: kentwelcome
+          RECCE_CLOUD_PROJECT: jaffle_shop_duckdb
 
       - name: Comment on pull request
-        uses: thollander/actions-comment-pull-request@v2
+        uses: thollander/actions-comment-pull-request@v3
         with:
-          filePath: recce_summary.md
-          comment_tag: recce
+          message: |
+            # Recce Cloud Snapshot ${{ steps.recce-snapshot-upload.outputs.snapshot_id }}
+            [Launch by Recce Cloud](http://localhost:3000/launch/${{ steps.recce-snapshot-upload.outputs.snapshot_id }})
+          comment-tag: recce-snapshot
+
+      # - name: Upload Recce State File
+      #   uses: actions/upload-artifact@v4
+      #   id: recce-artifact-uploader
+      #   with:
+      #     name: duckdb
+      #     path: |
+      #       jaffle_shop.duckdb
+
+      # - name: Prepare Recce Summary
+      #   id: recce-summary
+      #   run: |
+      #     recce summary --cloud --cloud-token ${{ secrets.RECCE_CLOUD_TOKEN }} > recce_summary.md
+      #     cat recce_summary.md >> $GITHUB_STEP_SUMMARY
+      #     echo '${{ env.NEXT_STEP_MESSAGE }}' >> recce_summary.md
+
+      #     # Handle the case when the recce summary is too long to be displayed in the GitHub PR comment
+      #     if [[ `wc -c recce_summary.md | awk '{print $1}'` -ge '65535' ]]; then
+      #       echo '# Recce Summary
+      #     The recce summary is too long to be displayed in the GitHub PR comment.
+      #     Please check the summary detail in the [Job Summary](${{github.server_url}}/${{github.repository}}/actions/runs/${{github.run_id}}) page.
+      #     ${{ env.NEXT_STEP_MESSAGE }}' > recce_summary.md
+      #     fi
+
+      #   env:
+      #     ARTIFACT_URL: ${{ steps.recce-artifact-uploader.outputs.artifact-url }}
+      #     RECCE_STATE_PASSWORD: ${{ vars.RECCE_STATE_PASSWORD}}
+      #     NEXT_STEP_MESSAGE: |
+      #       ### How to check the recce result
+      #       ```bash
+      #       # Launch the recce server based on the state file
+      #       recce server --review --cloud --password ${{ vars.RECCE_STATE_PASSWORD}}
+
+      #       # Open the recce server http://localhost:8000 by your browser
+      #       ```
+
+      # - name: Comment on pull request
+      #   uses: thollander/actions-comment-pull-request@v2
+      #   with:
+      #     filePath: recce_summary.md
+      #     comment_tag: recce
