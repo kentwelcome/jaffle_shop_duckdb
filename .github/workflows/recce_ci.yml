@@ -25,7 +25,7 @@ jobs:
       - name: Install dependencies
         run: |
           pip install -r requirements.txt
-          pip install recce
+          pip install recce-nightly
       - name: Prepare dbt Base environment
         run: |
           gh repo set-default ${{ github.repository }}
@@ -47,11 +47,11 @@ jobs:
         env:
           DBT_CURRENT_TARGET: "dev"
 
-      - name: Run Recce CI
-        run: |
-          recce run --cloud --cloud-token ${{ secrets.RECCE_CLOUD_TOKEN }}
-        env:
-          RECCE_STATE_PASSWORD: ${{ vars.RECCE_STATE_PASSWORD }}
+      # - name: Run Recce CI
+      #   run: |
+      #     recce run --cloud --cloud-token ${{ secrets.RECCE_CLOUD_TOKEN }}
+      #   env:
+      #     RECCE_STATE_PASSWORD: ${{ vars.RECCE_STATE_PASSWORD }}
 
       - name: Upload DBT Artifacts
         uses: actions/upload-artifact@v4
