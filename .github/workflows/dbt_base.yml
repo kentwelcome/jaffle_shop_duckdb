@@ -46,3 +46,4 @@ jobs:
         uses: DataRecce/recce-cloud-ci-action@v0.1
         with:
           api_host: "https://c5ed3e6fef60.ngrok-free.app"
+          web_host: "http://localhost:3000"
