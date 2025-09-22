@@ -42,11 +42,7 @@ jobs:
           name: target
           path: target/
 
-      - name: RECCE Cloud Snapshot Upload
-        run: |
-          .github/scripts/upload-snapshot base
-        env:
-          RECCE_CLOUD_TOKEN: ${{ secrets.RECCE_CLOUD_TOKEN }}
-          RECCE_CLOUD_API_HOST: https://554b955bf3fb.ngrok-free.app
-          RECCE_CLOUD_ORGANIZATION: kentwelcome
-          RECCE_CLOUD_PROJECT: jaffle_shop_duckdb
+      - name: RECCE Cloud CI/CD Action
+        uses: DataRecce/recce-cloud-ci-action@v0.1
+        with:
+          api_host: "https://c5ed3e6fef60.ngrok-free.app"
