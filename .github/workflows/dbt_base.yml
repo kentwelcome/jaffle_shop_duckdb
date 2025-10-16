@@ -43,6 +43,4 @@ jobs:
           path: target/
 
       - name: RECCE Cloud CI/CD Action
-        uses: DataRecce/recce-cloud-cicd-action@v1-beta
-        with:
-          api_host: "https://aniyah-uncooled-annalistically.ngrok-free.dev"
+        uses: DataRecce/recce-cloud-cicd-action@v1
